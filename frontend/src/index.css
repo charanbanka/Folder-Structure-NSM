@@ -1,0 +1,335 @@
+
+
+
+
+
+.content-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  height: 74px;
+}
+
+.content-title {
+  font-size: 18px;
+  margin-left: 2rem;
+}
+
+.create-folder {
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.main-content {
+  background-color: #e1e6f2;
+  height: 100vh;
+  padding: 5px;
+}
+
+.cf-icon {
+  border-radius: 8px;
+  /* background-color: #2d336b; */
+  color: #2d336b;
+  transition: all 0.1 ease;
+  position: relative;
+}
+
+.cf-icon:hover {
+  color: #161831;
+}
+
+.cf-add {
+  position: absolute;
+  top: 100%;
+  right: 1%;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+
+  background-color: #ffffff;
+  border-radius: 8px;
+
+  padding: 5px;
+  z-index: 5;
+}
+
+.cf-add span {
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  /* padding-left: 5px; */
+  /* padding-right: 5px; */
+  transition: all 0.1s ease;
+}
+
+.cf-add span:hover {
+  background-color: #eff0f4;
+}
+
+
+/*margin */
+
+.mt-05 {
+  margin-top: 5px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+/*margin end*/
+
+/*padding */
+
+.pt-05 {
+  padding-top: 5px;
+}
+
+.pt-10 {
+  padding-top: 10px;
+}
+
+/*padding end*/
+
+/*button */
+.btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: lightgray;
+  color: #000;
+}
+.btn:disabled,
+.btn[disabled] {
+  cursor: not-allowed;
+  background-color: #a7aab5 !important;
+  border-color: #a7aab5 !important;
+  color: #ffffff;
+}
+
+.btn-outline {
+  border: none;
+  background-color: #ffffff;
+  color: black;
+}
+
+.btn-primary {
+  background-color: #2d336b;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #090f42;
+  color: #ffffff;
+}
+/*button end */
+
+/*text */
+.txt-error {
+  color: red;
+}
+
+.cf-icon {
+  border-radius: 8px;
+  color: #2d336b;
+  transition: all 0.1s ease; /* Fixed transition syntax */
+  position: relative; /* Ensures .cf-add positions relative to this */
+  display: inline-block; /* Prevents unwanted width issues */
+}
+
+.cf-icon:hover {
+  color: #161831;
+}
+
+/* Dropdown menu styling */
+.cf-add {
+  position: absolute;
+  top: 100%; /* Position below the icon */
+  right: 1%; /* Align to the right */
+  z-index: 5; /* Ensure it stays above other elements */
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Fixed from 'left' to 'flex-start' */
+
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for depth */
+  min-width: 150px; /* Ensures the dropdown has a minimum width */
+}
+
+.cf-add span {
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-sizing: border-box;
+}
+
+.cf-add span:hover {
+  background-color: #eff0f4;
+}
+
+.horizontal-line {
+  width: 100%;
+  height: 1px;
+  background-color: lightgray;
+  margin: 5px 0; /* Adds vertical spacing around the line */
+}
+
+.gap-10 {
+  gap: 10px;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.w-5 {
+  width: 1px !important;
+}
+
+.data-menu-icon {
+  transition: all 0.1s ease;
+}
+
+.data-menu-icon:hover {
+  background-color: #3c3c3c;
+  background-color: #d0d9f4;
+
+  padding: 3px;
+  border-radius: 50%;
+}
+
+.table-container {
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.right-side-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.right-side-table th,
+.right-side-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.right-side-table th:nth-child(1),
+.right-side-table td:nth-child(1) {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.right-side-table th:nth-child(2),
+.right-side-table td:nth-child(2) {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.right-side-table th {
+  font-weight: bold;
+}
+
+.right-side-table tbody tr {
+  cursor: pointer;
+  background-color: #ffffff;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.right-side-table tbody tr:hover {
+  /* background-color: #e6f0fa; */
+  background-color: #eff0f4;
+
+  transition: background-color 0.2s;
+}
+
+.right-side-table td:last-child {
+  text-align: right;
+}
+
+/* Nested content styling */
+.nested-content {
+  padding-left: 10px; /* Indent children */
+  background-color: #f9f9f9; /* Light background for nested rows */
+  border-radius: 4px;
+  width: 100%;
+}
+
+.nested-content .file-row {
+  border-left: 2px solid #ddd; /* Visual separation for files */
+  width: 100%;
+}
+
+.data-menu-icon {
+  cursor: pointer;
+}
+
+/* input css */
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border-color: lightgray;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  outline: none;
+  border: 2px solid lightgrey;
+}
+
+input:focus {
+  outline: none;
+  border: 2px solid grey;
+  /* background: #fffdf2; */
+}
+
+
+/* New styles for the badge */
+.icon-with-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge {
+  position: absolute;
+  top: -8px; /* Adjust to position on top-left */
+  left: -8px; /* Adjust to position on top-left */
+  background-color: rgb(234, 211, 11);
+  color: black;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%; /* Circular badge */
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
