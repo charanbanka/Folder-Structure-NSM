@@ -120,11 +120,11 @@ export function MainContent() {
       let url = `${FOLDER_URL}/delete/${id}`;
       const response = await serviceRequest({
         url,
-        method: "get",
+        method: "delete",
       });
       if (response.status === consts.SERVICE_SUCCESS) {
         handleClear();
-        // await fetchFoldersData();
+        await fetchFoldersData();
         await fetchChildrenDataByFolderId(parent_id);
       }
     } catch (error) {
@@ -137,10 +137,11 @@ export function MainContent() {
       let url = `${FILE_URL}/delete/${id}`;
       const response = await serviceRequest({
         url,
+        method: "delete",
       });
       if (response.status === consts.SERVICE_SUCCESS) {
         handleClear();
-        // await fetchFoldersData();
+        await fetchFoldersData();
         await fetchChildrenDataByFolderId(parent_id);
       }
     } catch (error) {
@@ -464,7 +465,7 @@ export function MainContent() {
               </div>
             </>
           )}
-          {formState.type == "folder" && (
+          {!(formState.type == "file" && formState?.isNew) && (
             <>
               <div className="divider" />
               <div className="d-flex flex-end align-center gap-10">

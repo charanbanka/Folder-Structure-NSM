@@ -122,7 +122,8 @@ const fetchFileDataByIdService = async (req, res) => {
 const fetchFilesService = async (reqInfo) => {
   const funName = "fetchFilesService";
   try {
-    return { status: consts.SERVICE_SUCCESS, data: "" };
+    let data = await DocumentModel.findAll({ raw: true });
+    return { status: consts.SERVICE_SUCCESS, data };
   } catch (error) {
     console.log(`error occured in ${funName} is`, error.message);
     return { status: consts.SERVICE_FAILURE, message: error.message };
