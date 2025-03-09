@@ -77,6 +77,11 @@ function DisplayFoldersOrFiles() {
   const { foldersData, isFolderOpenState } = useContext(FolderContext);
   return (
     <div className="sidebar-folder-list">
+      {!foldersData?.parent?.length && (
+        <div className="mt-10 ml-10 text-danger">
+          No Folder or Document Found. Plaese Create or Upload.
+        </div>
+      )}
       {foldersData?.parent?.map((folder) => {
         const isOpen = isFolderOpenState[folder.id] || false;
 
