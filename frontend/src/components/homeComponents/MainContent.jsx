@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { BsFilterSquareFill, BsPlusSquareFill } from "react-icons/bs";
-import FolderContent from "./FolderContent";
 import config from "../../common/config";
 import serviceRequest from "../../common/utils/serviceRequest";
 import consts from "../../common/consts";
@@ -9,6 +8,7 @@ import ModalDialog from "../popup-model";
 import FolderContext from "../context/folderContext";
 import { RxCross2 } from "react-icons/rx";
 import { FaFilter } from "react-icons/fa";
+import FolderContent from "./FolderContent";
 
 const FOLDER_URL = `${config.apigatewayurl}/folder`;
 const FILE_URL = `${config.apigatewayurl}/file`;
@@ -252,6 +252,14 @@ export function MainContent() {
     handleClear();
   };
 
+  const filterCount = () => {
+    let count = 0;
+    for (let [key, value] of Object.entries(filterState || {})) {
+      if (key && value) count++;
+    }
+    return count;
+  };
+
   return (
     <div className="content-wrapper">
       {/* Header */}
@@ -259,11 +267,18 @@ export function MainContent() {
         <span className="content-title">NSM {`>`} Folders & Documents</span>
         <div className="actions">
           <div className="dropdown-container">
-            <FaFilter
-              className="icon-btn"
-              size={35}
-              onClick={() => toggleDropdown("filter")}
-            />
+            <div className="icon-with-badge">
+              <FaFilter
+                className="icon-btn"
+                size={35}
+                onClick={() => toggleDropdown("filter")}
+              />
+              {filterCount() > 0 && (
+                <span className="badge" style={{ left: "auto", right: "-8%" }}>
+                  {filterCount()}
+                </span>
+              )}
+            </div>
             {isOpenState.filter && (
               <form
                 className="dropdown-menu"
@@ -286,7 +301,13 @@ export function MainContent() {
                       clear
                     </span>
                     {/* <button className="modal-clos" onClick={{}} title="Close"> */}
-                    <RxCross2 className="cursor-pointer" size={"24px"} />
+                    <RxCross2
+                      className="cursor-pointer"
+                      size={"24px"}
+                      onClick={() => {
+                        setIsOpenState({});
+                      }}
+                    />
                     {/* </button> */}
                   </div>
                 </div>
@@ -408,7 +429,7 @@ export function MainContent() {
               <input
                 name="file"
                 type="file"
-                accept=".pdf,.txt,.png,.svg"
+                accept=".pdf,.txt,.png,.svg,.jpg,.jpeg"
                 required
                 onChange={handleChange}
                 autoComplete="off"

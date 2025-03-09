@@ -9,6 +9,8 @@ import FolderContext from "../components/context/folderContext";
 import ModalDialog from "../components/popup-model";
 import MyIframeComponent from "../components/FileViewer";
 import useModal from "../components/popup-model/use-model";
+import { SiGoogledocs } from "react-icons/si";
+import { FaImage, FaRegFilePdf } from "react-icons/fa";
 
 const FOLDER_URL = `${config.apigatewayurl}/folder`;
 
@@ -34,6 +36,8 @@ export default function Dashboard() {
     setIsFolderOpenState((prev) => ({ ...prev, [name]: value }));
     setCurrentFolder(value ? { id: name } : {});
   }
+
+  console.log("gdbd",isFolderOpenState,currentFolder)
 
   async function fetchChildrenDataByFolderId(id = currentFolder.id) {
     try {
@@ -88,6 +92,15 @@ export default function Dashboard() {
     setEditState({ [newState.id]: newState });
   };
 
+  function getIconByFileIcon(extension) {
+    if (extension.includes("doc"))
+      return <SiGoogledocs size="22px" color="blue" />;
+    else if (extension.includes("pdf"))
+      return <FaRegFilePdf size="22px" color="red" />;
+    else if (["jpg", "jpeg", "png", "svg"].includes(extension))
+      return <FaImage size={"22px"} color="green" />;
+  }
+
   console.log("data", editState, formState);
   return (
     <FolderContext.Provider
@@ -110,6 +123,7 @@ export default function Dashboard() {
         updateEditState,
         filterState,
         setFilterState,
+        getIconByFileIcon,
       }}
     >
       <div className="dashboard-container">

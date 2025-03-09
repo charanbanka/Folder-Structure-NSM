@@ -33,7 +33,7 @@
   text-decoration: underline;
 }
 
-.text-danger{
+.text-danger {
   color: red;
 }
 
@@ -69,6 +69,10 @@
 
 /*margin */
 
+.ml-05 {
+  margin-left: 05px;
+}
+
 .ml-10 {
   margin-left: 10px;
 }
@@ -77,6 +81,95 @@
   margin-left: 20px;
 }
 
+.mr-05 {
+  margin-left: 05px;
+}
+
+.mr-10 {
+  margin-left: 10px;
+}
+
+.mr-20 {
+  margin-left: 20px;
+}
+
+.mt-05 {
+  margin-left: 05px;
+}
+
+.mt-10 {
+  margin-left: 10px;
+}
+
+.mt-20 {
+  margin-left: 20px;
+}
+
+.mb-05 {
+  margin-left: 05px;
+}
+
+.mb-10 {
+  margin-left: 10px;
+}
+
+.mb-20 {
+  margin-left: 20px;
+}
+
+/* margin end */
+
+/*padding */
+
+.pl-05 {
+  padding-left: 05px;
+}
+
+.pl-10 {
+  padding-left: 10px;
+}
+
+.pl-20 {
+  padding-left: 20px;
+}
+
+.pr-05 {
+  padding-right: 05px;
+}
+
+.pr-10 {
+  padding-right: 10px;
+}
+
+.pr-20 {
+  padding-right: 20px;
+}
+
+.pt-05 {
+  padding-top: 05px;
+}
+
+.pt-10 {
+  padding-top: 10px;
+}
+
+.pt-20 {
+  padding-top: 20px;
+}
+
+.pb-05 {
+  padding-bottom: 05px;
+}
+
+.pb-10 {
+  padding-bottom: 10px;
+}
+
+.pb-20 {
+  padding-bottom: 20px;
+}
+
+/* padding end */
 
 .cursor-pointer {
   cursor: pointer;
@@ -84,4 +177,25 @@
 
 .position-relative {
   position: relative;
+}
+
+.divider {
+  height: 1px;
+  background: lightgray;
+  margin: 5px 0;
+}
+.divider-vertical {
+  position: relative;
+  padding-left: 10px; 
+}
+
+.divider-vertical::before {
+  content: "";
+  position: absolute;
+  left: 5%;
+  top: 0;
+  bottom: 0;
+  width: 1px; /* Adjust thickness */
+  background-color: #ccc; /* Adjust color */
+  background-color: lightgray;
 }

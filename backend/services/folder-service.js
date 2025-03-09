@@ -4,6 +4,8 @@ const DocumentModel = require("../models/documents");
 const db = require("../common/db");
 const Sequelize = require("sequelize");
 const { Op } = require("sequelize");
+const { formatDate } = require("../common/utils");
+const moment = require("moment");
 
 const failureResp = {
   status: consts.SERVICE_FAILURE,
@@ -241,42 +243,89 @@ const fetchFoldersAndDocsCountService = async () => {
  * @param {Object} filterCriteria - Filter criteria including name, description, and date.
  * @returns {Object} - Response object with status and folder data or error message.
  */
+
 const fetchFoldersWithCountsByFilter = async (filterCriteria = {}) => {
   const { name, description, date } = filterCriteria;
 
+  // Validate and sanitize input
+  const sanitizedName = typeof name === "string" ? name.trim() : "";
+  const sanitizedDescription =
+    typeof description === "string" ? description.trim() : "";
+  const sanitizedCreationDate = formatDate(
+    new Date(date) || null,
+    "YYYY-MM-DD"
+  );
+
   try {
+    // Build where clause explicitly
+    const whereClause = {};
+    if (sanitizedName) {
+      whereClause.name = { [Op.iLike]: `%${sanitizedName}%` }; // Case-insensitive search
+    }
+    if (sanitizedDescription) {
+      whereClause.description = { [Op.iLike]: `%${sanitizedDescription}%` };
+    }
+    // Assume sanitizedCreationDate = "2025-08-03" (YYYY-MM-DD)
+    if (sanitizedCreationDate) {
+      const startDate = moment
+        .utc(sanitizedCreationDate, "YYYY-MM-DD")
+        .startOf("day")
+        .toISOString();
+      const endDate = moment
+        .utc(sanitizedCreationDate, "YYYY-MM-DD")
+        .endOf("day")
+        .toISOString();
+
+      whereClause.created_at = {
+        [Op.gte]: startDate, // Greater than or equal to start of the day
+        // [Op.lte]: endDate,   // Less than or equal to end of the day
+      };
+    }
+
+    console.log("Where clause:", whereClause); // Debug the where clause
+
     // Fetch matching folders with basic attributes
     const matchingFolders = await FolderModel.findAll({
-      where: {
-        ...(name && {
-          name: {
-            [Sequelize.fn("LOWER", Sequelize.col("name"))]: {
-              [Op.like]: `%${name.toLowerCase()}%`,
-            },
-          },
-        }),
-        ...(description && { description: { [Op.like]: `%${description}%` } }),
-        ...(date && { created_at: date }),
-      },
+      where: whereClause,
       attributes: ["id", "name", "parent_id"],
     });
     console.log("Matching folders:", matchingFolders);
 
     // Fetch matching documents with basic attributes
+    const documentWhereClause = {};
+    if (sanitizedName) {
+      documentWhereClause.name = { [Op.iLike]: `%${sanitizedName}%` };
+    }
+    if (sanitizedCreationDate) {
+      const startDate = moment
+        .utc(sanitizedCreationDate, "YYYY-MM-DD")
+        .startOf("day")
+        .toISOString();
+      const endDate = moment
+        .utc(sanitizedCreationDate, "YYYY-MM-DD")
+        .endOf("day")
+        .toISOString();
+
+      documentWhereClause.created_at = {
+        [Op.gte]: startDate, // Greater than or equal to start of the day
+        // [Op.lte]: endDate,   // Less than or equal to end of the day
+      };
+    }
+
+    console.log("Document where clause:", documentWhereClause); // Debug the document where clause
+
     const matchingDocuments = await DocumentModel.findAll({
-      where: {
-        ...(name && { name: { [Op.like]: `%${name}%` } }),
-        ...(date && { created_at: date }),
-      },
+      where: documentWhereClause,
       attributes: ["id", "name", "folder_id"],
     });
     console.log("Matching documents:", matchingDocuments);
+
+    // ... (rest of the function remains the same, including folderIdsSet, topLevelFolderIds, etc.)
 
     // Collect unique folder IDs for recursive parent fetching
     const folderIdSet = new Set();
     const topLevelFolderIds = [];
 
-    // Identify top-level folders and collect parent IDs
     for (const folder of matchingFolders) {
       if (folder.id && folder.parent_id === null) {
         topLevelFolderIds.push(folder.id);
@@ -287,7 +336,6 @@ const fetchFoldersWithCountsByFilter = async (filterCriteria = {}) => {
       }
     }
 
-    // Collect folder IDs from documents
     for (const document of matchingDocuments) {
       if (document.id && document.folder_id) {
         if (!topLevelFolderIds.includes(document.folder_id)) {
@@ -326,8 +374,9 @@ const fetchFoldersWithCountsByFilter = async (filterCriteria = {}) => {
           name: folder.name,
           description: folder.description,
           created_at: folder.created_at,
-          subfolder_count: subfolderCount,
-          doc_count: documentCount,
+          updated_at: folder.updated_at,
+          subfolderCount,
+          documentCount,
         };
       })
     );

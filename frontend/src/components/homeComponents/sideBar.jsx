@@ -13,6 +13,87 @@ import serviceRequest from "../../common/utils/serviceRequest";
 
 const FOLDER_URL = `${config.apigatewayurl}/folder`;
 
+function GetFolderBar({ folder, isOpen, children, ml }) {
+  const { foldersData, isFolderOpenState, updateFolderOpenState } =
+    useContext(FolderContext);
+  return (
+    <div className="divider-vertical" style={{ marginLeft: `${ml}px` }}>
+      <div
+        key={folder.id}
+        className={`folder-item ${isOpen && "active"}`}
+        onClick={() => {
+          updateFolderOpenState(folder.id, !isOpen);
+        }}
+      >
+        <div className="folder-info">
+          <FaRegFolder size={"18px"} />
+          <span>{folder.name}</span>
+        </div>
+        <FaPlusCircle
+          className="options-icon"
+          color={isOpen ? "rgb(234, 211, 11)" : "grey"}
+          size={"16px"}
+        />
+      </div>
+      {isOpen &&
+        children &&
+        children?.map((item) => {
+          const isChildOpen = isFolderOpenState?.[item.id] || false;
+          return item.isFolder ? (
+            <GetFolderBar
+              key={item.id}
+              isOpen={isChildOpen}
+              folder={item}
+              children={foldersData?.[item.id]}
+              ml={ml + 5}
+            />
+          ) : (
+            <GetFileBar key={item.id} file={item} ml={ml + 5} />
+          );
+        })}
+    </div>
+  );
+}
+
+function GetFileBar({ file, ml }) {
+  const { foldersData, getIconByFileIcon } = useContext(FolderContext);
+
+  return (
+    <div
+      key={file.id}
+      className={`file-item`}
+      style={{ marginLeft: `${ml}px` }}
+    >
+      <div className="file-info">
+        {getIconByFileIcon(file.extension)}
+        {file.name}
+      </div>
+      <FaPlusCircle className="options-icon" color="grey" size={"16px"} />
+    </div>
+  );
+}
+
+function DisplayFoldersOrFiles() {
+  const { foldersData, isFolderOpenState } = useContext(FolderContext);
+  return (
+    <div className="sidebar-folder-list">
+      {foldersData?.parent?.map((folder) => {
+        const isOpen = isFolderOpenState[folder.id] || false;
+
+        return (
+          <GetFolderBar
+            key={folder.id}
+            folder={folder}
+            isOpen={isOpen}
+            children={foldersData?.[folder.id]}
+            ml={0}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export default function SideBar() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [countState, setCountState] = useState({});
@@ -78,21 +159,8 @@ export default function SideBar() {
         </div>
 
         {/* Folder List */}
-        <div className="sidebar-folder-list">
-          {foldersData?.parent?.map((folder) => (
-            <div key={folder.id} className="folder-item">
-              <div className="folder-info">
-                <FaRegFolder size={"18px"} />
-                {folder.name}
-              </div>
-              <FaPlusCircle
-                className="options-icon"
-                color="grey"
-                size={"16px"}
-              />
-            </div>
-          ))}
-        </div>
+
+        <DisplayFoldersOrFiles />
       </div>
     </>
   );

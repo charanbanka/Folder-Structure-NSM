@@ -112,6 +112,7 @@ body {
 
 .sidebar-folder-list {
   margin-top: 10px;
+  overflow-y: auto;
 }
 
 .folder-item {
@@ -123,16 +124,57 @@ body {
   border-bottom: 1px solid lightgray;
   transition: background 0.2s;
   /* border-radius: 10px; */
-}
-
-.folder-item:hover {
-  background-color: #e0e0e0;
+  cursor: pointer;
 }
 
 .folder-info {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.folder-info span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100px;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid lightgray;
+  transition: background 0.2s;
+  /* border-radius: 10px; */
+  cursor: pointer;
+}
+
+.folder-item.active {
+  background-color: #e2e8f0;
+}
+
+.file-item.active {
+  background-color: #e2e8f0;
+}
+
+.file-item:hover {
+  background-color: #e0e0e0;
+}
+
+.folder-item:hover {
+  background-color: #e0e0e0;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .options-icon {
@@ -453,4 +495,219 @@ input:focus {
   background-color: #d1d3d9;
   padding: 5px;
   border-radius: 50%;
+}
+
+/* latest css */
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.menu-folder-row,
+.menu-file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menu-folder-row:hover,
+.menu-file-row:hover {
+  background: #eaeaea;
+}
+
+.menu-folder-meta,
+.menu-file-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-folder-meta .menu-icon,
+.menu-file-meta .menu-icon {
+  font-size: 22px;
+}
+
+.menu-folder-name,
+.menu-file-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.menu-badge {
+  background: #007bff;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 12px;
+}
+
+.menu-dropdown-container {
+  position: relative;
+}
+
+.menu-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 30px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 5px 0;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-d-item {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menu-d-item:hover {
+  background: #f0f0f0;
+}
+
+.menu-divider {
+  height: 1px;
+  background: #ddd;
+  margin: 5px 0;
+}
+
+/* Child indentation */
+.menu-folder-children {
+  padding-left: 20px;
+  border-left: 2px solid #ddd;
+  margin-left: 10px;
+}
+
+.folder-name {
+  width: 3000px;
+}
+
+.folder-description {
+  width: auto;
+}
+
+.folder-createdat {
+  width: 130px;
+}
+
+.folder-updatedat {
+  width: 130px;
+}
+
+.folder-menu-icon {
+  width: 30px;
+}
+
+/*latets */
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.menu-header,
+.menu-folder-row,
+.menu-file-row {
+  display: grid;
+  grid-template-columns: 2.5fr 4.3fr 1.5fr 1.5fr 0.2fr;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 6px;
+}
+
+.menu-header {
+  font-weight: bold;
+  /* background: #f1f1f1; */
+}
+
+.menu-folder-row,
+.menu-file-row {
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menu-folder-row.active {
+  background-color: #e2e8f0;
+}
+
+.menu-folder-row:hover,
+.menu-file-row:hover {
+  background: #eaeaea;
+}
+
+/* Folder/File Name */
+.menu-folder-info,
+.menu-file-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Badge */
+.menu-badge {
+  background: #007bff;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 12px;
+}
+
+/* Dropdown Menu */
+.menu-dropdown-container {
+  position: relative;
+}
+
+.menu-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 30px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 5px 0;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-d-item {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menu-d-item:hover {
+  background: #f0f0f0;
+}
+
+.menu-divider {
+  height: 1px;
+  background: #ddd;
+  margin: 5px 0;
+}
+
+/* Child indentation */
+.menu-folder-children {
+  padding-left: 20px;
+  border-left: 2px solid #ddd;
+  margin-left: 10px;
 }
