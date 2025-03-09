@@ -85,7 +85,10 @@ npm start
 
 ## 📖 API Documentation
 The API documentation is available in **Postman** and **Swagger**:
-- **Postman Collection**: [Add Postman collection link here]
+- **Postman Collection**: [Paste the generated public Postman link here]
+- Please use the below document link to access the API data:
+- [Google Docs API Reference](https://docs.google.com/document/d/1JQ_5S_pOqMQ7yRsCQ2DWY6uIheStOvisf1E24cuYoDA/edit?tab=t.0)
+
 
 ---
 
