@@ -8,6 +8,7 @@ import useModal from "../popup-model/use-model";
 import ModalDialog from "../popup-model";
 import FolderContext from "../context/folderContext";
 import { RxCross2 } from "react-icons/rx";
+import { FaFilter } from "react-icons/fa";
 
 const FOLDER_URL = `${config.apigatewayurl}/folder`;
 const FILE_URL = `${config.apigatewayurl}/file`;
@@ -32,6 +33,8 @@ export function MainContent() {
     show,
     editState,
     updateEditState,
+    filterState,
+    setFilterState,
   } = useContext(FolderContext);
 
   const toggleDropdown = (key) => {
@@ -53,6 +56,25 @@ export function MainContent() {
     setErrors({});
     updateEditState({});
     setIsOpenState({});
+  }
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+
+    // Convert YYYY-MM-DD to DD-MM-YYYY if needed
+    const formattedValue =
+      name === "date" ? value.split("-").reverse().join("-") : value;
+
+    setFilterState((prev) => ({
+      ...prev,
+      [name]: formattedValue,
+    }));
+  };
+
+  function handleFilterClear() {
+    //call default data
+    setFilterState({});
+    setIsOpenState({});
+    fetchFoldersData();
   }
 
   const validateForm = () => {
@@ -221,6 +243,11 @@ export function MainContent() {
     }
   };
 
+  const handleFilterSubmit = async (e) => {
+    e.preventDefault();
+    fetchFoldersData(filterState);
+  };
+
   const onClose = () => {
     handleClear();
   };
@@ -232,15 +259,16 @@ export function MainContent() {
         <span className="content-title">NSM {`>`} Folders & Documents</span>
         <div className="actions">
           <div className="dropdown-container">
-            <BsFilterSquareFill
+            <FaFilter
               className="icon-btn"
               size={35}
               onClick={() => toggleDropdown("filter")}
             />
             {isOpenState.filter && (
-              <div
+              <form
                 className="dropdown-menu"
                 style={{ width: "350px", padding: "10px" }}
+                onSubmit={handleFilterSubmit}
               >
                 <div
                   className="d-flex justify-content-between align-items-center"
@@ -253,6 +281,7 @@ export function MainContent() {
                     <span
                       className="text-underline text-danger cursor-pointer"
                       style={{ fontSize: "20px" }}
+                      onClick={handleFilterClear}
                     >
                       clear
                     </span>
@@ -261,7 +290,7 @@ export function MainContent() {
                     {/* </button> */}
                   </div>
                 </div>
-                <div className="horizontal-line-lite" />
+                <div className="divider" />
                 <div
                   className="d-flex flex-column gap-10"
                   style={{ padding: "10px" }}
@@ -271,8 +300,8 @@ export function MainContent() {
                     <input
                       name="name"
                       placeholder="Folder name"
-                      required
-                      onChange={handleChange}
+                      onChange={handleFilterChange}
+                      value={filterState?.name}
                     />
                   </div>
                   <div className="d-flex flex-column gap-10">
@@ -280,24 +309,33 @@ export function MainContent() {
                     <input
                       name="description"
                       placeholder="Folder description"
-                      required
-                      onChange={handleChange}
+                      onChange={handleFilterChange}
+                      value={filterState?.description}
                     />
                   </div>
                   <div className="d-flex flex-column gap-10">
                     <label>Date</label>
+
                     <input
                       name="date"
-                      placeholder="DD-MM-YYYY"
                       type="date"
-                      required
-                      onChange={handleChange}
+                      onChange={handleFilterChange}
+                      value={
+                        filterState?.date
+                          ? filterState.date.split("-").reverse().join("-") // Convert DD-MM-YYYY → YYYY-MM-DD
+                          : ""
+                      }
                     />
                   </div>
 
-                  <div className="horizontal-line-lite" />
+                  <div className="divider" />
                   <div className="d-flex flex-end align-center gap-10">
-                    <button className="btn" onClick={handleClear}>
+                    <button
+                      className="btn"
+                      onClick={() => {
+                        setIsOpenState({});
+                      }}
+                    >
                       Cancel
                     </button>
                     <button type="submit" className="btn btn-primary">
@@ -305,7 +343,7 @@ export function MainContent() {
                     </button>
                   </div>
                 </div>
-              </div>
+              </form>
             )}
           </div>
           <div className="dropdown-container">

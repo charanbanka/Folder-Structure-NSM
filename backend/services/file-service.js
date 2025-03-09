@@ -4,6 +4,10 @@ const {
   generateUuid,
   saveFileInLocal,
 } = require("../common/utils");
+
+const fs = require("fs");
+const path = require("path");
+
 const join = require("path").join;
 
 const DocumentModel = require("../models/documents");
@@ -150,9 +154,6 @@ const deleteFileByIdService = async ({ id }) => {
   }
 };
 
-const fs = require("fs");
-const path = require("path");
-
 const fetchFilesFromLocalPath = async (req, res) => {
   const folderPath = path.join(__dirname, "../uploads"); // Adjust the local folder path
 
@@ -185,8 +186,6 @@ const fetchFilesFromLocalPath = async (req, res) => {
   }
 };
 
-module.exports = { fetchFilesFromLocalPath };
-
 module.exports = {
   addFileService,
   fetchFileByIdService,
@@ -194,4 +193,5 @@ module.exports = {
   updateFileByIdService,
   deleteFileByIdService,
   fetchFileDataByIdService,
+  fetchFilesFromLocalPath,
 };

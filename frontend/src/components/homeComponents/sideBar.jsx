@@ -1,12 +1,47 @@
-import React, { useContext, useState } from "react";
-import { FaRegFolder, FaPlusCircle, FaBars, FaTimes } from "react-icons/fa";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  FaRegFolder,
+  FaPlusCircle,
+  FaBars,
+  FaTimes,
+  FaRegFile,
+} from "react-icons/fa";
 import { IoDocumentSharp } from "react-icons/io5";
 import FolderContext from "../context/folderContext";
+import config from "../../common/config";
+import serviceRequest from "../../common/utils/serviceRequest";
+
+const FOLDER_URL = `${config.apigatewayurl}/folder`;
 
 export default function SideBar() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [countState, setCountState] = useState({});
 
   const { foldersData } = useContext(FolderContext);
+
+  useEffect(() => {
+    fetchFoldersData();
+  }, []);
+
+  async function fetchFoldersData() {
+    try {
+      let url = `${FOLDER_URL}/fetchfolderanddocs/count`;
+
+      let resp = await serviceRequest({
+        url,
+        method: "get",
+      });
+      setCountState(resp?.data);
+    } catch (error) {
+      console.log("error", error.message);
+    }
+  }
+
+  const getCountMessage = (val) => {
+    if (val >= 200) return "200+";
+    else if (val > 100) return "100+";
+    return val;
+  };
 
   return (
     <>
@@ -23,17 +58,21 @@ export default function SideBar() {
           <div className="sidebar-stats">
             <div className="stat-item">
               <span className="stat-icon">
-                <FaRegFolder size={"24px"} />
+                <FaRegFolder size={"24px"} color="red" />
               </span>
               <span className="stat-name">Folders</span>
-              <span className="stat-value">200+</span>
+              <span className="stat-value">
+                {getCountMessage(countState?.folders_count)}
+              </span>
             </div>
             <div className="stat-item">
               <span className="stat-icon">
-                <IoDocumentSharp size={"24px"} />
+                <FaRegFile size={"24px"} color="red" />
               </span>
               <span className="stat-name">Documents</span>
-              <span className="stat-value">200+</span>
+              <span className="stat-value">
+                {getCountMessage(countState?.docs_count)}
+              </span>
             </div>
           </div>
         </div>

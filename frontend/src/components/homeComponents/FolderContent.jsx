@@ -35,7 +35,7 @@ function FolderRow({ item, children, isOpen, onToggle }) {
             <FaRegFolder size="28px" />
 
             <span className="badge">
-              {parseInt(item.file_count) + parseInt(item.subfolder_count) || 0}
+              {parseInt(item.doc_count) + parseInt(item.subfolder_count) || 0}
             </span>
           </div>
           <span>{item.name}</span>

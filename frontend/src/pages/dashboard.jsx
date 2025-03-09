@@ -19,6 +19,7 @@ export default function Dashboard() {
   const [currentFolder, setCurrentFolder] = useState({});
   const [formState, setFormState] = useState({ type: "" });
   const [editState, setEditState] = useState({});
+  const [filterState, setFilterState] = useState({});
   const { isShowing, toggle, hide, show } = useModal();
 
   useEffect(() => {
@@ -50,10 +51,25 @@ export default function Dashboard() {
     }
   }
 
-  async function fetchFoldersData() {
+  async function fetchFoldersData(searchTerms = {}) {
     try {
+      let url = `${FOLDER_URL}/parentfolders`;
+
+      let searchQuery = [];
+      for (let [key, value] of Object.entries(searchTerms)) {
+        if (key && value) {
+          searchQuery.push(`${key}=${value}`);
+        }
+      }
+
+      if (searchQuery) {
+        url += `?${searchQuery.join("&")}`;
+      }
+
+      console.log("folder_usr", url);
+
       let resp = await serviceRequest({
-        url: `${FOLDER_URL}/parentfolders`,
+        url,
         method: "get",
       });
       console.log("resp", resp);
@@ -92,6 +108,8 @@ export default function Dashboard() {
         setFormState,
         editState,
         updateEditState,
+        filterState,
+        setFilterState,
       }}
     >
       <div className="dashboard-container">

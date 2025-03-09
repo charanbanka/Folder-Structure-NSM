@@ -23,7 +23,9 @@ const fetchFolderById = async (req, res) => {
 //  Fetch only parent folders (parent_id = null)
 const fetchParentFolders = async (req, res) => {
   try {
-    let resp = await folderService.fetchParentFoldersWithCounts();
+    let queryParams = req.query; // Use req.query instead of req.queryParams
+
+    let resp = await folderService.fetchParentFoldersWithCounts(queryParams);
     res.status(200).send(resp);
   } catch (error) {
     res
@@ -80,6 +82,18 @@ const deleteFolderById = async (req, res) => {
   }
 };
 
+//  Fetch only parent folders (parent_id = null)
+const fetchFoldersAndDocsCount = async (req, res) => {
+  try {
+    let resp = await folderService.fetchFoldersAndDocsCountService();
+    res.status(200).send(resp);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ error: "Error fetching parent folders", details: error });
+  }
+};
+
 module.exports = {
   addFolder,
   fetchFolderById,
@@ -88,4 +102,5 @@ module.exports = {
   updateFolderById,
   deleteFolderById,
   fetchFolderChildren,
+  fetchFoldersAndDocsCount,
 };

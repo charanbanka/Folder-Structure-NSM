@@ -1,8 +1,9 @@
 const consts = require("../common/consts");
 const FolderModel = require("../models/folders");
 const DocumentModel = require("../models/documents");
-const { raw } = require("body-parser");
 const db = require("../common/db");
+const Sequelize = require("sequelize");
+const { Op } = require("sequelize");
 
 const failureResp = {
   status: consts.SERVICE_FAILURE,
@@ -125,9 +126,12 @@ const deleteFolderByIdService = async (id) => {
   }
 };
 
-const fetchParentFoldersWithCounts = async () => {
-  // const { parent_id } = reqInfo;
+const fetchParentFoldersWithCounts = async (reqInfo) => {
+  const { name, description, date } = reqInfo;
   try {
+    if (name || description || date)
+      return await fetchFoldersWithCountsByFilter(reqInfo);
+
     let folders = await FolderModel.findAll({
       where: { parent_id: null }, // Fetch only top-level folders
       attributes: [
@@ -146,7 +150,7 @@ const fetchParentFoldersWithCounts = async () => {
           FolderModel.sequelize.literal(
             `(SELECT COUNT(*) FROM documents AS d WHERE d.folder_id = folders.id)`
           ),
-          "file_count",
+          "doc_count",
         ],
       ],
     });
@@ -191,7 +195,7 @@ const fetchFolderChildren = async (parent_id) => {
             FolderModel.sequelize.literal(
               `(SELECT COUNT(*) FROM documents AS d WHERE d.folder_id = folders.id)`
             ),
-            "file_count",
+            "doc_count",
           ],
         ],
         raw: true,
@@ -210,6 +214,170 @@ const fetchFolderChildren = async (parent_id) => {
   }
 };
 
+const fetchFoldersAndDocsCountService = async () => {
+  const funName = "fetchFoldersAndDocsCountService";
+  try {
+    // Get total count of folders
+    const foldersCount = await FolderModel.count();
+
+    // Get total count of documents
+    const docsCount = await DocumentModel.count();
+
+    return {
+      status: consts.SERVICE_SUCCESS,
+      data: {
+        docs_count: docsCount,
+        folders_count: foldersCount,
+      },
+    };
+  } catch (error) {
+    console.error(`Error in ${funName}:`, error.message);
+    return { status: consts.SERVICE_FAILURE, message: error.message };
+  }
+};
+
+/**
+ * Fetches folders with their subfolder and document counts based on specified filters.
+ * @param {Object} filterCriteria - Filter criteria including name, description, and date.
+ * @returns {Object} - Response object with status and folder data or error message.
+ */
+const fetchFoldersWithCountsByFilter = async (filterCriteria = {}) => {
+  const { name, description, date } = filterCriteria;
+
+  try {
+    // Fetch matching folders with basic attributes
+    const matchingFolders = await FolderModel.findAll({
+      where: {
+        ...(name && {
+          name: {
+            [Sequelize.fn("LOWER", Sequelize.col("name"))]: {
+              [Op.like]: `%${name.toLowerCase()}%`,
+            },
+          },
+        }),
+        ...(description && { description: { [Op.like]: `%${description}%` } }),
+        ...(date && { created_at: date }),
+      },
+      attributes: ["id", "name", "parent_id"],
+    });
+    console.log("Matching folders:", matchingFolders);
+
+    // Fetch matching documents with basic attributes
+    const matchingDocuments = await DocumentModel.findAll({
+      where: {
+        ...(name && { name: { [Op.like]: `%${name}%` } }),
+        ...(date && { created_at: date }),
+      },
+      attributes: ["id", "name", "folder_id"],
+    });
+    console.log("Matching documents:", matchingDocuments);
+
+    // Collect unique folder IDs for recursive parent fetching
+    const folderIdSet = new Set();
+    const topLevelFolderIds = [];
+
+    // Identify top-level folders and collect parent IDs
+    for (const folder of matchingFolders) {
+      if (folder.id && folder.parent_id === null) {
+        topLevelFolderIds.push(folder.id);
+      } else if (folder.id && folder.parent_id) {
+        if (!topLevelFolderIds.includes(folder.parent_id)) {
+          folderIdSet.add(folder.parent_id);
+        }
+      }
+    }
+
+    // Collect folder IDs from documents
+    for (const document of matchingDocuments) {
+      if (document.id && document.folder_id) {
+        if (!topLevelFolderIds.includes(document.folder_id)) {
+          folderIdSet.add(document.folder_id);
+        }
+      }
+    }
+
+    const folderIdsToProcess = [...folderIdSet];
+
+    // Recursively fetch all parent folders
+    const additionalParentFolderIds = await fetchAllParentFoldersRecursively(
+      folderIdsToProcess,
+      topLevelFolderIds
+    );
+
+    // Fetch detailed data for all parent folders
+    const parentFolderDetails = await FolderModel.findAll({
+      where: { id: [...topLevelFolderIds, ...additionalParentFolderIds] },
+      attributes: ["id", "name", "description", "created_at", "updated_at"],
+    });
+
+    // Calculate counts for each parent folder
+    const enrichedFolderData = await Promise.all(
+      parentFolderDetails.map(async (folder) => {
+        const subfolderCount = await FolderModel.count({
+          where: { parent_id: folder.id },
+        });
+
+        const documentCount = await DocumentModel.count({
+          where: { folder_id: folder.id },
+        });
+
+        return {
+          id: folder.id,
+          name: folder.name,
+          description: folder.description,
+          created_at: folder.created_at,
+          subfolder_count: subfolderCount,
+          doc_count: documentCount,
+        };
+      })
+    );
+
+    return { status: "success", data: enrichedFolderData };
+  } catch (error) {
+    console.error("Error fetching folders with counts:", error);
+    return { status: "failure", message: error.message };
+  }
+};
+
+/**
+ * Recursively fetches all parent folders until no further parent_id exists.
+ * @param {Array<number>} folderIds - IDs of folders to process.
+ * @param {Array<number>} existingParentFolderIds - Already identified parent folder IDs.
+ * @returns {Array<number>} - List of newly found parent folder IDs.
+ */
+const fetchAllParentFoldersRecursively = async (
+  folderIds,
+  existingParentFolderIds
+) => {
+  const parentFolders = await FolderModel.findAll({
+    where: { id: folderIds },
+    attributes: ["id", "name", "description", "created_at", "parent_id"],
+  });
+
+  const nextParentIdSet = new Set();
+
+  for (const folder of parentFolders) {
+    if (
+      folder.parent_id &&
+      !existingParentFolderIds.includes(folder.parent_id)
+    ) {
+      nextParentIdSet.add(folder.parent_id);
+    }
+  }
+
+  const nextParentIds = [...nextParentIdSet];
+
+  if (nextParentIds.length > 0) {
+    const additionalParentIds = await fetchAllParentFoldersRecursively(
+      nextParentIds,
+      [...existingParentFolderIds, ...nextParentIds]
+    );
+    return [...nextParentIds, ...additionalParentIds];
+  }
+
+  return nextParentIds;
+};
+
 //  Export all functions
 module.exports = {
   addFolderService,
@@ -220,4 +388,5 @@ module.exports = {
   deleteFolderByIdService,
   fetchParentFoldersWithCounts,
   fetchFolderChildren,
+  fetchFoldersAndDocsCountService,
 };

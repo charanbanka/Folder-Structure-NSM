@@ -23,4 +23,7 @@ folderRouter.post("/update/:id", folderController.updateFolderById);
 // Delete a folder by its ID (fix naming issue)
 folderRouter.get("/delete/:id", folderController.deleteFolderById);
 
+
+folderRouter.get("/fetchfolderanddocs/count", folderController.fetchFoldersAndDocsCount)
+
 module.exports = folderRouter;
