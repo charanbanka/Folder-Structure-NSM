@@ -52,6 +52,8 @@ const addFileService = async (reqInfo) => {
 
     let docResp = await DocumentModel.create(documentObject);
 
+    await sleep(2000);
+
     return { status: consts.SERVICE_SUCCESS };
   } catch (error) {
     console.log(`error occured in ${funName} is`, error.message);
@@ -77,6 +79,9 @@ const fetchFileByIdService = async (reqInfo) => {
     return { status: consts.SERVICE_FAILURE, message: error.message };
   }
 };
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const fetchFileDataByIdService = async (req, res) => {
   const funName = "fetchFileByIdService";

@@ -251,10 +251,9 @@ const fetchFoldersWithCountsByFilter = async (filterCriteria = {}) => {
   const sanitizedName = typeof name === "string" ? name.trim() : "";
   const sanitizedDescription =
     typeof description === "string" ? description.trim() : "";
-  const sanitizedCreationDate = formatDate(
-    new Date(date) || null,
-    "YYYY-MM-DD"
-  );
+  const sanitizedCreationDate = date
+    ? formatDate(new Date(date) || null, "YYYY-MM-DD")
+    : null;
 
   try {
     // Build where clause explicitly
@@ -289,7 +288,6 @@ const fetchFoldersWithCountsByFilter = async (filterCriteria = {}) => {
       where: whereClause,
       attributes: ["id", "name", "parent_id"],
     });
-    console.log("Matching folders:", matchingFolders);
 
     // Fetch matching documents with basic attributes
     const documentWhereClause = {};
@@ -318,7 +316,6 @@ const fetchFoldersWithCountsByFilter = async (filterCriteria = {}) => {
       where: documentWhereClause,
       attributes: ["id", "name", "folder_id"],
     });
-    console.log("Matching documents:", matchingDocuments);
 
     // ... (rest of the function remains the same, including folderIdsSet, topLevelFolderIds, etc.)
 

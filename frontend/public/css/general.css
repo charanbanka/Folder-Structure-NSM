@@ -115,6 +115,32 @@ body {
   overflow-y: auto;
 }
 
+.sidebar-folder-list {
+  margin-top: 10px;
+  max-height: 550px; /* Set an appropriate height */
+  overflow-y: auto; /* Scroll only when needed */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #aaa transparent; /* Custom scrollbar color */
+}
+
+/* Custom scrollbar for WebKit browsers (Chrome, Safari) */
+.sidebar-folder-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-folder-list::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 3px;
+  background-color: rgb(234, 211, 11);
+
+}
+
+.sidebar-folder-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
 .folder-item {
   display: flex;
   justify-content: space-between;
@@ -497,12 +523,31 @@ input:focus {
   border-radius: 50%;
 }
 
-/* latest css */
 .menu-container {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 10px;
+  max-height: 550px; /* Set an appropriate height */
+  overflow-y: auto; /* Scroll only when needed */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #aaa transparent; /* Custom scrollbar color */
+}
+
+/* Custom scrollbar for WebKit browsers (Chrome, Safari) */
+.menu-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menu-container::-webkit-scrollbar-thumb {
+  background: #aaa;
+  background-color: rgb(234, 211, 11);
+  border-radius: 3px;
+}
+
+.menu-container::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .menu-folder-row,
@@ -710,4 +755,90 @@ input:focus {
   padding-left: 20px;
   border-left: 2px solid #ddd;
   margin-left: 10px;
+}
+
+.menu-file-upload-wrapper input {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  cursor: pointer;
+}
+
+.menu-file-upload-icon {
+  font-size: 50px;
+  color: #007bff;
+}
+
+.menu-upload-btn {
+  margin-top: 10px;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.menu-upload-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+.menu-file-upload-container {
+  width: 400px;
+  padding: 5px;
+  background: white;
+  border-radius: 10px;
+  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
+  box-sizing: border-box;
+}
+
+.menu-file-upload-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 5px;
+  height: 125px;
+  cursor: pointer;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.menu-file-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.menu-progress-bar {
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-progress-fill {
+  height: 10px;
+  background: #4caf50;
+  transition: width 0.3s ease-in-out;
+}
+
+.menu-upload-message {
+  text-align: right;
+  margin-top: 10px;
+  color: black;
+}
+
+.menu-divider {
+  height: 1px;
+  background: #ddd;
+  margin: 10px 0;
 }

@@ -146,6 +146,7 @@ export default function SideBar() {
                 {getCountMessage(countState?.folders_count)}
               </span>
             </div>
+            <div className="divider-vertical"></div>
             <div className="stat-item">
               <span className="stat-icon">
                 <FaRegFile size={"24px"} color="red" />

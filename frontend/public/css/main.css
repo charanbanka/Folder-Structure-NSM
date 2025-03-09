@@ -199,3 +199,9 @@
   background-color: #ccc; /* Adjust color */
   background-color: lightgray;
 }
+
+
+.disabled {
+  cursor: not-allowed;
+  background-color: gray;
+}

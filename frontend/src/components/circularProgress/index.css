@@ -1,0 +1,65 @@
+/* Main loader styles */
+.circular-loader {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+  padding: 5px;
+  margin: 5px;
+}
+
+/* Center alignment */
+.circular-loader.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* Left alignment */
+.circular-loader.left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Right alignment */
+.circular-loader.right {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Loader inner styles */
+.circular-loader div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  margin: 8px;
+  border: 3px solid #3498db;
+  border-radius: 50%;
+  animation: circular-spin 1.2s linear infinite;
+  border-color: #3498db transparent transparent transparent;
+}
+
+/* Animation delays */
+.circular-loader div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.circular-loader div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.circular-loader div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+/* Animation keyframes */
+@keyframes circular-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

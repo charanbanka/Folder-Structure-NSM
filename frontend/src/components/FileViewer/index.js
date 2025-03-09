@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import CircularProgressLoader from "../circularProgress";
 
 const MyIframeComponent = ({ link }) => {
   const [iframeError, setIframeError] = useState(false);
@@ -15,8 +16,6 @@ const MyIframeComponent = ({ link }) => {
     }, 1000);
   };
 
-  console.log("url", link)
-
   if (!link) {
     return (
       <div className="mt40 p-1 text-danger">Link Inavlid or Not Provided</div>
@@ -25,6 +24,7 @@ const MyIframeComponent = ({ link }) => {
 
   return (
     <div className="mt40">
+      {loading && <CircularProgressLoader align={"center"} />}
       {iframeError ? (
         <div className="p-1 text-danger">Unable to load content.</div>
       ) : (

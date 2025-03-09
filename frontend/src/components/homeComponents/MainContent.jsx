@@ -9,6 +9,8 @@ import FolderContext from "../context/folderContext";
 import { RxCross2 } from "react-icons/rx";
 import { FaFilter } from "react-icons/fa";
 import FolderContent from "./FolderContent";
+import { MdCloudUpload } from "react-icons/md";
+import FileUpload from "../fileUpload";
 
 const FOLDER_URL = `${config.apigatewayurl}/folder`;
 const FILE_URL = `${config.apigatewayurl}/file`;
@@ -105,9 +107,8 @@ export function MainContent() {
       });
       if (response.status === consts.SERVICE_SUCCESS) {
         handleClear();
-        if (data.isNew && !data.folder_parent_id) await fetchFoldersData();
-        else if (!data.isNew && data.folder_parent_id)
-          await fetchChildrenDataByFolderId(data.folder_parent_id);
+        await fetchFoldersData();
+        await fetchChildrenDataByFolderId(data.folder_parent_id);
       }
     } catch (error) {
       console.error("Error:", error.message);
@@ -161,6 +162,7 @@ export function MainContent() {
       });
 
       console.log("File uploaded:", response);
+      await fetchFoldersData();
       fetchChildrenDataByFolderId(data.folder_id);
       handleClear();
     } catch (error) {
@@ -243,6 +245,10 @@ export function MainContent() {
     }
   };
 
+  function onUploadComplete() {
+    fetchChildrenDataByFolderId(formState.parent_id || currentFolder.id);
+    handleClear();
+  }
   const handleFilterSubmit = async (e) => {
     e.preventDefault();
     fetchFoldersData(filterState);
@@ -388,7 +394,7 @@ export function MainContent() {
                 <span
                   className="d-item"
                   onClick={() => {
-                    setFormState({ type: "file", isnew: true });
+                    setFormState({ type: "file", isNew: true });
                     toggle();
                   }}
                 >
@@ -422,19 +428,12 @@ export function MainContent() {
           {formState.isDelete ? (
             <div className="text-danger">Are You sure You Want to Delete ?</div>
           ) : formState.type === "file" ? (
-            <div className="d-flex flex-column gap-10">
-              <label>
-                Browse Documents <strong className="text-danger">*</strong>{" "}
-              </label>
-              <input
-                name="file"
-                type="file"
-                accept=".pdf,.txt,.png,.svg,.jpg,.jpeg"
-                required
-                onChange={handleChange}
-                autoComplete="off"
-              />
-            </div>
+            <FileUpload
+              uploadUrl={`${FILE_URL}/add`}
+              data={{ folder_id: formState.parent_id || currentFolder.id }}
+              onUploadComplete={onUploadComplete}
+              onCancel={handleClear}
+            />
           ) : (
             <>
               <div className="d-flex flex-column gap-10">
@@ -465,19 +464,23 @@ export function MainContent() {
               </div>
             </>
           )}
-          <div className="divider" />
-          <div className="d-flex flex-end align-center gap-10">
-            <button className="btn" onClick={handleClear}>
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary">
-              {formState?.isDelete
-                ? "Delete"
-                : formState.type === "file"
-                ? "Upload"
-                : "Submit"}
-            </button>
-          </div>
+          {formState.type == "folder" && (
+            <>
+              <div className="divider" />
+              <div className="d-flex flex-end align-center gap-10">
+                <button className="btn" onClick={handleClear}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  {formState?.isDelete
+                    ? "Delete"
+                    : formState.type === "file"
+                    ? "Upload"
+                    : "Submit"}
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </ModalDialog>
 

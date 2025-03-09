@@ -11,6 +11,7 @@ import MyIframeComponent from "../components/FileViewer";
 import useModal from "../components/popup-model/use-model";
 import { SiGoogledocs } from "react-icons/si";
 import { FaImage, FaRegFilePdf } from "react-icons/fa";
+import { BiSolidFileTxt } from "react-icons/bi";
 
 const FOLDER_URL = `${config.apigatewayurl}/folder`;
 
@@ -37,8 +38,6 @@ export default function Dashboard() {
     setCurrentFolder(value ? { id: name } : {});
   }
 
-  console.log("gdbd",isFolderOpenState,currentFolder)
-
   async function fetchChildrenDataByFolderId(id = currentFolder.id) {
     try {
       let resp = await serviceRequest({
@@ -46,7 +45,6 @@ export default function Dashboard() {
         method: "get",
       });
 
-      console.log("fetchChildrenDataByFolderId", resp);
       setFoldersData((prev) => {
         return { ...prev, [id]: resp?.data };
       });
@@ -76,12 +74,12 @@ export default function Dashboard() {
         url,
         method: "get",
       });
-      console.log("resp", resp);
+
       let newState = resp?.data?.map((item) => {
         return { ...item, isFolder: true };
       });
       setFoldersData((prev) => {
-        return { ...prev, parent: newState };
+        return { parent: newState };
       });
     } catch (error) {
       console.log("error", error.message);
@@ -99,9 +97,10 @@ export default function Dashboard() {
       return <FaRegFilePdf size="22px" color="red" />;
     else if (["jpg", "jpeg", "png", "svg"].includes(extension))
       return <FaImage size={"22px"} color="green" />;
+    else if (["txt"].includes(extension))
+      return <BiSolidFileTxt size={"22px"} color="gray" />;
   }
 
-  console.log("data", editState, formState);
   return (
     <FolderContext.Provider
       value={{
