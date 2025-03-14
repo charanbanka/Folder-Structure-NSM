@@ -92,3 +92,13 @@ The API documentation is available in **Postman** and **Swagger**:
 
 ---
 
+![image](https://github.com/user-attachments/assets/8c459c8f-0262-4ac0-905d-f34cfe60b573)
+
+![image](https://github.com/user-attachments/assets/2c0cb809-9ebf-4325-8282-bab2d1f75509)
+
+![image](https://github.com/user-attachments/assets/43ed6038-3c4a-4285-b7ee-1666018ec171)
+
+![image](https://github.com/user-attachments/assets/4c66b9b7-3fd8-439b-bcdf-82bb38fff79d)
+
+![image](https://github.com/user-attachments/assets/96997656-2db6-4bb8-b032-a9de3694cb2a)
+
